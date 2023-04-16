@@ -1,0 +1,374 @@
+﻿@using kocluk.SERVICES.Dtos.StudyData
+@using kocluk.SERVICES.Dtos.StudentsData
+@{
+    ViewData["Title"] = "Takvim";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+    List<StudyDto>? studies = ViewBag.Dersler as List<StudyDto>;
+    List<StudentsDto>? students = ViewBag.Ogrenciler as List<StudentsDto>;
+
+}
+
+<link href="~/assets/libs/sweetalert2/sweetalert2.min.css" rel="stylesheet" type="text/css" />
+
+<div class="row mb-4">
+    <div class="col-xl-3">
+        <div class="card h-100">
+            <div class="card-body">
+                <div id="external-events">
+                    @if (studies!.Count > 0 && studies != null)
+                    {
+                        <p class="text-muted">Takvime yerleştirmek istediğiniz dersi sürükleyip bırakın</p>
+                        foreach (var item in studies)
+                        {
+                            <div class="external-event fc-event @item.Color" data-class="@item.Color">
+                                <i class="mdi mdi-checkbox-blank-circle font-size-11 me-2"></i>@item.StudyName
+                            </div>
+                        }
+                    }
+                    else
+                    {
+                        <p class="text-muted">Ders bulunmuyor!</p>
+                    }
+
+                </div>
+
+            </div>
+        </div>
+    </div> <!-- end col-->
+    <div class="col-xl-9">
+        <div class="card mb-0">
+            <div class="card-body">
+                <div id="divErrors" style="display:none;" class="alert alert-danger alert-dismissible fade show" role="alert">
+                    <strong id="errors"></strong>
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div class="card mb-0">
+            <div class="card-body">
+                <div id="calendar_booking"></div>
+            </div>
+        </div>
+    </div> <!-- end col -->
+</div> <!-- end row-->
+<div style='clear:both'></div>
+
+<div class="modal fade" id="event-modal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+     aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header py-3 px-4">
+                <h5 class="modal-title" id="modal-title">Ders Randevusu Formu</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+
+            <div class="modal-body p-4">
+                <form class="needs-validation" name="event-form" id="form-event" novalidate>
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="mb-3">
+                                <label class="form-label">Randevu Adı</label>
+                                <input class="form-control" placeholder="Randevu Adı" type="text"
+                                       name="title" id="event-title" required value="">
+                                <div class="invalid-feedback">
+                                    Lütfen bir randevu adı girin...
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="mb-3">
+                                <label class="form-label">Başlangıç Zamanı</label>
+                                <input class="form-control" placeholder="Başlangıç Zamanını belirleyin" type="datetime-local"
+                                       name="startTime" id="event-start" required value="">
+                                <div class="invalid-feedback">
+                                    Lütfen başlangıç zamanını belirleyin...
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="mb-3">
+                                <label class="form-label">Bitiş Zamanı</label>
+                                <input class="form-control" placeholder="Bitiş Zamanını Belirleyin" type="datetime-local"
+                                       name="endTime" id="event-end" required value="">
+                                <div class="invalid-feedback">
+                                    Lütfen bitiş zamanını belirleyin...
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-12">
+                            <div class="mb-3">
+                                <label class="form-label">Öğrenci</label>
+                                <select class="form-control select2" id="event-students">
+                                    <option>Öğrenci Seçiniz</option>
+                                </select>
+                                <div class="invalid-feedback">
+                                    Lütfen bir öğrenci seçiniz...
+                                </div>
+                            </div>
+                        </div><!-- end col-->
+                        <div class="col-12">
+                            <div class="mb-3">
+                                <label class="form-label">Ders</label>
+                                <select class="form-control select2" id="event-lesson">
+                                    <option>Ders Seçiniz</option>
+                                </select>
+                                <div class="invalid-feedback">
+                                    Lütfen bir ders seçiniz...
+                                </div>
+                            </div>
+                        </div><!-- end col-->
+                    </div> <!-- end row-->
+                    <div class="row mt-2">
+                        <div class="col-6">
+                            <button type="button" class="btn btn-danger"
+                                    id="btn-delete-event">
+                                Sil
+                            </button>
+                        </div> <!-- end col-->
+                        <div class="col-6 text-end">
+                            <button type="button" class="btn btn-light me-1"
+                                    data-bs-dismiss="modal">
+                                Kapat
+                            </button>
+                            <button type="submit" class="btn btn-success" id="btn-save-event">Kaydet</button>
+                        </div> <!-- end col-->
+                    </div> <!-- end row-->
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="~/assets/libs/jquery/jquery.min.js"></script>
+<script src="~/assets/libs/sweetalert2/sweetalert2.min.js"></script>
+<script src="~/assets/js/pages/sweet-alerts.init.js"></script>
+
+<script>
+
+    var calendarEl = document.getElementById('calendar_booking');
+
+    $(function () {
+        RenderCalendar();
+    });
+
+    function RenderCalendar() {
+
+        $.get('/dersprogrami/ajandagetir')
+            .done(function (data) {
+
+                const getData = { 'data': data.data, 'IsSuccessful': data.isSuccessful }
+                var successful = getData.IsSuccessful;
+
+                if (successful) {
+
+                    getCalendarData(getData);
+
+                } else {
+                    var errors = data.Errors;
+                    displayValidationErrors(errors);
+                }
+
+            });
+    }
+
+    function displayValidationErrors(errors) {
+        var $ul = $('<ul>');
+        $ul.empty();
+
+        $.each(errors, function (idx, errorMessage) {
+            $ul.append('<li>' + errorMessage + '</li>');
+        });
+
+        $('#errors').html($ul);
+        $('#divErrors').show();
+    }
+
+    function getCalendarData(data) {
+        var events = [];
+
+        $.each(data.data, function (idx, tasks) {
+
+            events.push({
+                'id': tasks.id,
+                'title': tasks.title,
+                'start': tasks.startTime,
+                'end': tasks.endTime,
+                'allday': tasks.allDay,
+                'color': tasks.color,
+                'textColor': tasks.textColor,
+            });
+
+        });
+
+        var calendar = new FullCalendar.Calendar(calendarEl, {
+            plugins: ['interaction', 'dayGrid', 'timeGrid'],
+            slotEventOverlap: false,
+
+            header: {
+                left: 'prevYear, prev, next, nextYear, today',
+                center: 'title',
+                right: 'dayGridMonth, timeGridWeek, timeGridDay',
+            },
+
+            editable: true,
+            droppable: true,
+            navLinks: true,
+            eventLimit: true,
+
+            eventClick: function (event, jsEvent, view) {
+                var title = event.el.innerText;
+                getBooking(title);
+            },
+
+            events: events,
+            drop: function (eventObj) {
+                insertBooking(eventObj);
+            }
+
+        });
+
+        calendar.render();
+    }
+
+    //function getBooking(title) {
+
+    //    $.get('/dersprogrami/randevugetir', { title: title })
+         
+    //    .done(function (data) {
+
+    //            var event = {
+    //                'id': data.data.id,
+    //                'title': data.data.title,
+    //                'start': data.data.startTime,
+    //                'end': data.data.endTime,
+    //                'allday': data.data.allDay,
+    //                'color': data.data.color,
+    //                'textColor': data.data.textColor,
+    //                'student': data.data.student,
+    //            };
+
+    //            getStudents();
+    //            getLesson();
+
+    //            $('#event-modal').modal("show");
+    //            $('#event-title').val(event.title);
+    //            $('#event-start').val(event.start);
+    //            $('#event-end').val(event.end);
+
+    //        });
+
+    //}
+
+    function getBooking(title){
+       $.get('/dersprogrami/randevugetir', { title: title })
+         
+        .done(function (data) {
+
+                var event = {
+                    'id': data.data.id,
+                    'title': data.data.title,
+                    'start': data.data.startTime,
+                    'end': data.data.endTime,
+                    'allday': data.data.allDay,
+                    'color': data.data.color,
+                    'textColor': data.data.textColor,
+                    'student': data.data.student,
+                };
+
+                window.location.href = `/randevuduzenle?id=${event.id}`;
+
+            });
+    }
+
+    function insertBooking(eventObj) {
+
+        var eventsFromCalendar = {
+            Title: eventObj.draggedEl.innerText,
+            StartTime: eventObj.dateStr,
+        }
+
+        $.ajax({
+            type: "POST",
+            url: "/dersprogrami/derskayityap",
+            data: { eventsJson: JSON.stringify(eventsFromCalendar) },
+            success: function (response) {
+                Swal.fire(
+                    'Başarılı!',
+                    'Randevu başarıyla oluşturuldu! Randevunuzu düzenlemeye devam edin.',
+                    'success'
+                )
+            },
+            error: function (xhr) {
+                Swal.fire(
+                    'Başarısız!',
+                    'Randevu oluşturulurken bir hata meydana geldi!',
+                    'error'
+                )
+            }
+        });
+
+    }
+
+    function getStudents() {
+        $.get('/dersprogrami/getStudents').done(function (data) {
+
+            const getData = { 'data': data.data };
+            var students = document.getElementById("event-students");
+
+            $.each(data.data, function (idx, task) {
+                var option = document.createElement("option");
+                option.text = task.studentName;
+                option.id = task.id;
+                students.add(option);
+            });
+
+        });
+    }
+
+    function getLesson() {
+        $.get('/dersprogrami/getLesson').done(function (data) {
+
+            const getData = { 'data': data.data };
+            var lessons = document.getElementById("event-lesson");
+
+            $.each(data.data, function (idx, task) {
+                var option = document.createElement("option");
+                option.text = task.studyName;
+                option.id = task.id;
+                lessons.add(option);
+            });
+
+        });
+    }
+
+    let bookingform = document.getElementById("form-event");
+
+    bookingform.addEventListener("submit", (e) => {
+
+        e.preventDefault();
+
+        let title = document.getElementById("event-title").value;
+        let startTime = document.getElementById("event-start").value;
+        let endTime = document.getElementById("event-end").value;
+        let student = document.getElementById("event-students").value;
+
+        var bookingObject = { title: title, startTime: startTime, endTime: endTime, student: student };
+
+        $.ajax({
+            type: "POST",
+            url: "/dersprogrami/bookingupdate",
+            data: { eventJson: JSON.stringify(bookingObject) },
+            success: function (response) {
+                Swal.fire('Başarılı', 'Randevu güncelleme işlemi tamamlandı', 'success')
+            },
+            error: function (xhr) {
+                Swal.fire('Başarısız!', 'Randevu güncellenirken bir hata meydana geldi', 'error')
+            }
+        });
+
+    });
+
+</script>

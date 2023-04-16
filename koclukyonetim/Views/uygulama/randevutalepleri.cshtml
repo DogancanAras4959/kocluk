@@ -1,0 +1,100 @@
+﻿@model IEnumerable<kocluk.SERVICES.Dtos.BookingData.BookingRequestDto>
+
+@{
+    ViewData["Title"] = "Randevu Talepleri";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<style>
+    .head-form {
+        display: flex;
+        justify-content: space-between;
+        align-content: center;
+        flex-wrap: nowrap;
+        flex-direction: row;
+        align-items: center;
+    }
+
+    .vertical-data {
+        position: relative;
+        top: 4px;
+    }
+
+    .alert {
+        position: relative;
+        padding: 0.45rem 1rem;
+        margin-bottom: 1rem;
+        border: 1px solid transparent;
+        border-radius: 0.25rem;
+    }
+    .table-responsive{
+        overflow:hidden;
+    }
+</style>
+
+<div class="row">
+    <div class="col-lg-12">
+        <div class="card">
+            <div class="card-body">
+                @if (Model != null && Model.Count() > 0)
+                {
+                    <div class="table-responsive">
+                        <table class="table mb-0">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>#</th>
+                                    <th>Tarih</th>
+                                    <th>Öğrenci</th>
+                                    <th>Öğretmen</th>
+                                    <th>Ders</th>
+                                    <th>Durum</th>
+                                    <th>Oluşturulma</th>
+                                    <th>İşlem</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var item in Model.OrderByDescending(x => x.Id))
+                                {
+                                    string textColor = item.BookingProcess == "Onaylandı" ? "alert alert-success" : "alert alert-primary";
+                                    textColor = item.BookingProcess == "Reddedildi" ? "alert alert-danger" : "alert alert-primary";
+
+                                    <tr>
+                                        <th class="vertical-data" scope="row">@item.Id</th>
+                                        <td class="vertical-data">@item.BookingTime.ToString("MM/dd/yyyy HH:mm")</td>
+                                        <td class="vertical-data">@item.StudentName</td>
+                                        <td class="vertical-data">@item.TeacherName</td>
+                                        <td class="vertical-data">@item.StudyName</td>
+                                        <td class="vertical-data"><span class="@textColor">@item.BookingProcess</span></td>
+                                        <td class="vertical-data">@item.CreatedTime.ToString("MM/dd/yyyy HH:mm")</td>
+                                        <td class="vertical-data">
+                                           
+                                            @if (item.BookingProcess == "Talep")
+                                            {
+                                                <a class="btn btn-outline-secondary btn-sm edit" title="Düzenle" href="/randevuonayla?Id=@item.Id">
+                                                    <i class=" fas fa-calendar-plus" title="Accepted"></i>
+                                                </a>
+                                                <a onclick="return confirm('Bu randevuyu reddetmek istiyor musunuz?')" 
+                                                    class="btn btn-outline-secondary btn-sm deleted" title="Sil" href="/randevureddet?Id=@item.Id">
+                                                    <i class="fas fa-times" title="Rejected"></i>
+                                                </a>
+                                            }
+
+                                            <a class="btn btn-outline-secondary btn-sm above" onclick="return confirm('Bu randevu talebini silmek istiyor musunuz?')" href="/randevutalebinisil?Id=@item.Id">
+                                                <i class="fas fa-trash" title="Delete"></i>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+
+                }
+                else
+                {
+                    <div class="alert alert-info alert-align"><p style="margin-bottom:0;">Bu sayfada henüz bir randevu verisi bulunmuyor!</p></div>
+                }
+            </div>
+        </div>
+    </div>
+</div>

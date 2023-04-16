@@ -1,0 +1,99 @@
+﻿@model IEnumerable<kocluk.SERVICES.Dtos.StudyData.StudyDto>
+
+@{
+    ViewData["Title"] = "Dersler";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<style>
+    .head-form {
+        display: flex;
+        justify-content: space-between;
+        align-content: center;
+        flex-wrap: nowrap;
+        flex-direction: row;
+        align-items: center;
+    }
+
+    .vertical-data {
+        position: relative;
+        top: 13px;
+    }
+</style>
+
+<div class="row">
+    <div class="col-lg-12">
+        <div class="card">
+            <div class="card-body">
+                <div class="head-form">
+                    <p style="margin-bottom:0;">Dersleri yönetin</p>
+                    <a href="/dersekle" class="btn btn-primary w-md waves-effect waves-light">Ders Ekle</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-lg-12">
+        <div class="card">
+            <div class="card-body">
+                @if (Model != null && Model.Count() > 0)
+                {
+                    <div class="table-responsive">
+                        <table class="table mb-0">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>#</th>
+                                    <th>Ders Adı</th>
+                                    <th>Tip</th>
+                                    <th>Oluşturulma</th>
+                                    <th>Durum</th>
+                                    <th>İşlem</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var item in Model)
+                                {
+                                    <tr>
+                                        <th class="vertical-data" scope="row">@item.Id</th>
+                                        <td class="vertical-data">@item.StudyName</td>
+                                        <td class="vertical-data">@item.Type</td>
+                                        <td class="vertical-data">@item.CreatedTime.ToString("MM/dd/yyyy HH:mm")</td>
+                                        @if (item.IsActive == true)
+                                        {
+                                            <td class="vertical-data">Aktif</td>
+                                        }
+                                        else
+                                        {
+                                            <td class="vertical-data">Pasif</td>
+                                        }
+                                        <td class="vertical-data">
+                                              <a class="btn btn-outline-secondary btn-sm edit" title="Düzenle" href="/derskonulari?Id=@item.Id">
+                                                <i class="fas fa-eye" title="View"></i>
+                                            </a>
+                                            <a class="btn btn-outline-secondary btn-sm edit" title="Düzenle" href="/dersduzenle?Id=@item.Id">
+                                                <i class="fas fa-pencil-alt" title="Edit"></i>
+                                            </a>
+                                            <a onclick="return confirm('Bu dersi silmek istiyor musunuz?')" class="btn btn-outline-secondary btn-sm deleted" title="Sil" href="/derssil?Id=@item.Id">
+                                                <i class="fas fa-trash" title="Delete"></i>
+                                            </a>
+                                            <a class="btn btn-outline-secondary btn-sm above" title="Aktif/Pasif" href="/dersdurumduzenle?Id=@item.Id">
+                                                <i class="fas fa-wifi" title="Aktif/Pasif"></i>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+
+                }
+                else
+                {
+                    <div class="alert alert-info alert-align"><p style="margin-bottom:0;">Bu sayfada henüz bir ders verisi bulunmuyor!</p></div>
+                }
+            </div>
+        </div>
+    </div>
+</div>

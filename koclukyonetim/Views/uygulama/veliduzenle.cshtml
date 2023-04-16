@@ -1,0 +1,114 @@
+﻿@model kocluk.SERVICES.Dtos.UserData.UserDto
+
+@{
+    ViewData["Title"] = "Veli Düzenle";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<style>
+    .img-circle-form {
+        width: 150px;
+        height: 150px;
+        border-radius: 999px;
+        object-fit: cover;
+        display: flex;
+        flex-wrap: nowrap;
+        justify-content: center;
+        margin: 0 auto;
+    }
+</style>
+
+<div class="row" style="margin:0 auto; max-width:800px;">
+    <div class="col-sm-12">
+        <div class="card">
+            <div class="card-body">
+                <form class="" enctype="multipart/form-data" method="post" action=@Url.Action("kocguncelle", "uygulama")>
+                    @Html.HiddenFor(x=> x.Id)
+                    @Html.ValidationSummary(false, "", new { @class = "text-danger" })
+
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <div class="mb-4">
+                                <img id="img" src="@Model.Image" class="img-circle-form" />
+                                <span style="position:relative; top:10px; margin: 0 auto; display: flex; flex-wrap: nowrap; justify-content: center;"><em>(Zorunlu) Kare boyutta seçiniz (1000x1000)</em></span>
+                            </div>
+                            <div class="mb-4">
+                                <div class="row">
+                                    <div class="col-sm-6" style="margin:0 auto;">
+                                        <input type="file" class="form-control filestyle" data-input="false" name="file" id="file" accept="image/*" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="username">Kullanıcı Adı</label>
+                                @Html.EditorFor(x=> x.UserName,
+                                new { htmlAttributes = new { @class="form-control", placeholder="Koç adı giriniz..."}, id="username", type="text", @required = "required"} )
+                            </div>
+
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="username">Görünen Ad</label>
+                                @Html.EditorFor(x=> x.DisplayName,
+                                new { htmlAttributes = new { @class="form-control", placeholder="Görünen adı giriniz..."}, id="username", type="text", @required = "required"} )
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <div class="mb-3">
+                                <label for="username">Şifre</label>
+                                @Html.EditorFor(x=> x.Password,
+                                new { htmlAttributes = new { @class="form-control", placeholder="Şifre giriniz..."}, id="password", type="password", @required = "required"} )
+                            </div>
+                        </div>      
+                    </div>
+
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <div class="form-check form-switch mb-3" dir="ltr">
+                                @Html.CheckBoxFor(x => x.IsActive, new { @class = "form-check-input", id = "customSwitch1" })
+                                <label class="form-check-label" for="customSwitch1">Aktif mi?</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mt-4">
+                        <button class="btn btn-primary w-md waves-effect waves-light" type="submit">Veli Düzenle</button>
+                    </div>
+
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="~/assets/js/jquery.min.js"></script>
+<script src="~/assets/js/jquery.js"></script>
+
+<script>
+    $(function () {
+        $('#file').change(function () {
+            var input = this;
+            var url = $(this).val();
+            var ext = url.substring(url.lastIndexOf('.') + 1).toLowerCase();
+            if (input.files && input.files[0] && (ext == "gif" || ext == "png" || ext == "jpeg" || ext == "jpg")) {
+                var reader = new FileReader();
+                reader.onload = function (e) {
+                    $('#img').attr('src', e.target.result);
+                }
+                reader.readAsDataURL(input.files[0]);
+            }
+            else {
+                $('#img').attr('src', '~/assets/images/authentication-bg.jpg');
+            }
+        });
+    });
+</script>

@@ -1,0 +1,35 @@
+﻿@model kocluk.SERVICES.Dtos.AccountRoleData.AccountRoleDto
+
+@{
+    ViewData["Title"] = "Rol Düzenle";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="row">
+    <div class="col-lg-5">
+        <div class="card">
+            <div class="card-body">
+                <form class="" method="post" action=@Url.Action("rolguncelle", "yonetim")>
+                    @Html.HiddenFor(x=> x.Id)
+                    <div class="mb-3">
+                        <label for="username">Rol Adı</label>
+                        @Html.EditorFor(x=> x.RoleName,
+                        new { htmlAttributes = new { @class="form-control", placeholder="Rol adı giriniz..."}, id="username", type="text"} )
+                    </div>
+
+                    @Html.ValidationSummary(false, "", new { @class = "text-danger" })
+
+                    <div class="form-check form-switch mb-3" dir="ltr">
+                        @Html.CheckBoxFor(x => x.IsActive, new { @class = "form-check-input", id = "customSwitch1" })
+                        <label class="form-check-label" for="customSwitch1">Aktif mi?</label>
+                    </div>
+
+                    <div class="mt-4">
+                        <button class="btn btn-primary w-md waves-effect waves-light" type="submit">Rol Güncelle</button>
+                    </div>
+
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

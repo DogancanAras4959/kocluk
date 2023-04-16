@@ -1,0 +1,14 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\kocluk.COMMON\kocluk.COMMON.csproj" />
+    <ProjectReference Include="..\kocluk.DOMAIN\kocluk.DOMAIN.csproj" />
+  </ItemGroup>
+
+</Project>

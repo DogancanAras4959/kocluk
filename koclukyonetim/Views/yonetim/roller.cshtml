@@ -1,0 +1,92 @@
+﻿@using kocluk.SERVICES.Dtos.AccountRoleData
+
+@{
+    ViewData["Title"] = "Roller";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+    List<AccountRoleDto> roller = ViewBag.Roller as List<AccountRoleDto>;
+}
+<style>
+
+    .alert-align {
+        display: flex;
+        margin: 0 auto;
+        align-items: center;
+        flex-direction: row;
+        justify-content: center;
+    }
+
+</style>
+
+<div class="row">
+    <div class="col-lg-5">
+        <div class="card">
+            <div class="card-body">
+                @{
+                    await Html.RenderPartialAsync("_rolekle");
+                }
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-7">
+        <div class="card">
+            <div class="card-body">
+                @if (roller != null && roller.Count > 0)
+                {
+                    <div class="table-responsive">
+                        <table class="table mb-0">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>#</th>
+                                    <th>Rol Adı</th>
+                                    <th>Oluşturulma</th>
+                                    <th>Durum</th>
+                                    <th>İşlem</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var item in roller)
+                                {
+                                    <tr>
+                                        <th scope="row">@item.Id</th>
+                                        <td>@item.RoleName</td>
+                                        <td>@item.CreatedTime.ToString("MM/dd/yyyy HH:mm")</td>
+                                        @if (item.IsActive == true)
+                                        {
+                                            <td>Aktif</td>
+                                        }
+                                        else
+                                        {
+                                            <td>Pasif</td>
+                                        }
+                                        <td>
+                                            <a class="btn btn-outline-secondary btn-sm edit" title="Düzenle" href="/rolduzenle?Id=@item.Id">
+                                                <i class="fas fa-pencil-alt" title="Edit"></i>
+                                            </a>
+                                            <a onclick="return confirm('Bu rolü silmek istiyor musunuz?')"
+                                       class="btn btn-outline-secondary btn-sm deleted" title="Sil" href="/rolsil?Id=@item.Id">
+                                                <i class="fas fa-trash" title="Delete"></i>
+                                            </a>
+                                            <a class="btn btn-outline-secondary btn-sm above" title="Aktif/Pasif" href="/roldurumduzenle?Id=@item.Id">
+                                                <i class="fas fa-wifi" title="Aktif/Pasif"></i>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+
+                }
+                else
+                {
+                    <div class="alert alert-info alert-align"><p style="margin-bottom:0;">Bu sayfada henüz bir rol verisi bulunmuyor!</p></div>
+
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+
+

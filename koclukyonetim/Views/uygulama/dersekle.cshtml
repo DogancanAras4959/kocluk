@@ -1,0 +1,99 @@
+﻿@model kocluk.SERVICES.Dtos.StudyData.StudyDto
+
+@{
+    ViewData["Title"] = "Ders Ekle";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<style>
+    .img-circle-form {
+        width: 150px;
+        height: 150px;
+        border-radius: 999px;
+        object-fit: cover;
+        display: flex;
+        flex-wrap: nowrap;
+        justify-content: center;
+        margin: 0 auto;
+    }
+
+</style>
+
+<div class="row" style="margin:0 auto; max-width:800px;">
+    <div class="col-sm-12">
+        <div class="card">
+            <div class="card-body">
+                <form class="" enctype="multipart/form-data" method="post" action=@Url.Action("dersolustur", "uygulama")>
+
+                    @Html.ValidationSummary(false, "", new { @class = "text-danger" })
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="username">Ders Adı</label>
+                                @Html.EditorFor(x=> x.StudyName,
+                                new { htmlAttributes = new { @class="form-control", placeholder="Ders adı giriniz..."}, id="username", type="text", @required = "required"} )
+                            </div>
+
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="username">Tip</label>
+                                @Html.EditorFor(x=> x.Type,
+                                new { htmlAttributes = new { @class="form-control", placeholder="Tip giriniz..."}, id="username", type="text", @required = "required"} )
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <div class="mb-3">
+                                <label for="username">Renk</label>
+                                @Html.EditorFor(x=> x.Color,
+                                new { htmlAttributes = new { @class="form-control", placeholder="Renk seçenekleri için: bg-success(yeşil), bg-danger(kırmızı), bg-warning(sarı), bg-info(mavi)..."}, id="password", type="text", @required = "required"} )
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <div class="form-check form-switch mb-3" dir="ltr">
+                                @Html.CheckBoxFor(x => x.IsActive, new { @class = "form-check-input", id = "customSwitch1" })
+                                <label class="form-check-label" for="customSwitch1">Aktif mi?</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mt-4">
+                        <button class="btn btn-primary w-md waves-effect waves-light" type="submit">Ders Ekle</button>
+                    </div>
+
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="~/assets/js/jquery.min.js"></script>
+<script src="~/assets/js/jquery.js"></script>
+
+<script>
+    $(function () {
+        $('#file').change(function () {
+            var input = this;
+            var url = $(this).val();
+            var ext = url.substring(url.lastIndexOf('.') + 1).toLowerCase();
+            if (input.files && input.files[0] && (ext == "gif" || ext == "png" || ext == "jpeg" || ext == "jpg")) {
+                var reader = new FileReader();
+                reader.onload = function (e) {
+                    $('#img').attr('src', e.target.result);
+                }
+                reader.readAsDataURL(input.files[0]);
+            }
+            else {
+                $('#img').attr('src', '~/assets/images/authentication-bg.jpg');
+            }
+        });
+    });
+</script>

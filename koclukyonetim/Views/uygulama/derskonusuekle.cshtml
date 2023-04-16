@@ -1,0 +1,47 @@
+﻿@model kocluk.SERVICES.Dtos.StudyData.StudyTipDto
+
+@{
+    ViewData["Title"] = "Ders Konusu Ekle";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="row" style="margin:0 auto; max-width:800px;">
+    <div class="col-sm-12">
+        <div class="card">
+            <div class="card-body">
+                <form method="post" action=@Url.Action("derkonususolustur", "uygulama")>
+
+                    @Html.ValidationSummary(false, "", new { @class = "text-danger" })
+
+
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="mb-3">
+                                <label for="username">Konu Adı</label>
+                                @Html.EditorFor(x=> x.TipName,
+                                new { htmlAttributes = new { @class="form-control", placeholder="Konu adı giriniz..."}, id="username", type="text", @required = "required"} )
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="col-md-12">
+                                <div class="mb-3">
+                                    <label for="username">Ders Seçiniz</label>
+                                    @Html.DropDownListFor(x => x.StudyId, (SelectList)ViewBag.Dersler, new { @class = "form-select", id = "validationCustom03", @required = "" })
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="mt-4">
+                        <button class="btn btn-primary w-md waves-effect waves-light" type="submit">Konu Ekle</button>
+                    </div>
+
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

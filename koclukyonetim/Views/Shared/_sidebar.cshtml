@@ -1,0 +1,79 @@
+﻿<!-- ========== Left Sidebar Start ========== -->
+<div class="vertical-menu">
+
+    <div data-simplebar class="h-100">
+
+        <!--- Sidemenu -->
+        <div id="sidebar-menu">
+            <!-- Left Menu Start -->
+            <ul class="metismenu list-unstyled" id="side-menu">
+                <li class="menu-title">Menu</li>
+
+                <li>
+                    <a href=@Url.Action("anasayfa", "yonetim") class="waves-effect">
+                        <i class="ri-dashboard-line"></i><span class="badge rounded-pill bg-success float-end">3</span>
+                        <span>Yönetim Paneli</span>
+                    </a>
+                </li>
+
+                <li>
+                    <a href="javascript: void(0);" class="has-arrow waves-effect">
+                        <i class="ri-team-fill"></i>
+                        <span>Hesap İşlemleri</span>
+                    </a>
+                    <ul class="sub-menu" aria-expanded="false">
+                        <li><a href="/kullanicilar">Kullanıcılar</a></li>
+                        <li><a href="/roller">Roller</a></li>
+                    </ul>
+                </li>
+
+                <li>
+                    <a href="javascript: void(0);" class="has-arrow waves-effect">
+                        <i class="ri-smartphone-fill"></i>
+                        <span>Uygulama</span>
+                    </a>
+                    <ul class="sub-menu" aria-expanded="false">
+                        <li><a href="/koclar">Koçlar</a></li>
+                        <li>
+                            <a href="javascript: void(0);" class="has-arrow waves-effect">
+                                <span>Öğrenci İşlemleri</span>
+                            </a>
+                            <ul class="sub-menu" aria-expanded="false">
+                                <li><a href="/veliler">Veliler</a></li>
+                                <li><a href="/ogrenciler">Öğrenciler</a></li>
+                                <li><a href="/dersler">Dersler</a></li>
+                                <li><a href="/sinavlar">Sınavlar</a></li>
+                            </ul>
+                        </li>
+                        <li>
+                            <a href="javascript: void(0);" class="has-arrow waves-effect">
+                                <span>Randevu</span>
+                            </a>
+                            <ul class="sub-menu" aria-expanded="false">
+                                <li><a href="/randevular">Randevular</a></li>
+                                <li><a href="/randevutalepleri">Randevu Talepleri</a></li>
+                                <li>
+                                    <a href="/ajanda">
+                                        <span>Haftalık Ders Programı</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+
+                    </ul>
+                </li>
+
+                <li>
+                    <a href="/oturumkapat" class="waves-effect">
+                        <i class="ri-logout-circle-r-line"></i>
+                        <span>Çıkış Yap</span>
+                    </a>
+                </li>
+
+
+            </ul>
+        </div>
+        <!-- Sidebar -->
+    </div>
+</div>
+<!-- Left Sidebar End -->

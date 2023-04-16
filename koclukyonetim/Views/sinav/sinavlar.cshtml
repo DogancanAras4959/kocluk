@@ -1,0 +1,111 @@
+﻿@model IEnumerable<kocluk.SERVICES.Dtos.ExamsData.ExamsDto>
+
+@{
+    ViewData["Title"] = "Sınavlar";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<style>
+    .head-form {
+        display: flex;
+        justify-content: space-between;
+        align-content: center;
+        flex-wrap: nowrap;
+        flex-direction: row;
+        align-items: center;
+    }
+
+    .vertical-data {
+        position: relative;
+        top: 13px;
+    }
+</style>
+
+<div class="row">
+    <div class="col-lg-12">
+        <div class="card">
+            <div class="card-body">
+                <div class="head-form">
+                    <p style="margin-bottom:0;">Sınavları yönetin</p>
+                    <a href="/sinavekle" class="btn btn-primary w-md waves-effect waves-light">Sınav Ekle</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-lg-12">
+        <div class="card">
+            <div class="card-body">
+                @if (Model != null && Model.Count() > 0)
+                {
+                    <div class="table-responsive">
+                        <table class="table mb-0">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>#</th>
+                                    <th>Ders Adı</th>
+                                    <th>Öğretmen</th>
+                                    <th>Öğrenci</th>
+                                    <th>Sınıf</th>
+                                    <th>Not</th>
+                                    <th>Yapıldı Mı?</th>
+                                    <th>Oluşturulma</th>
+                                    <th>Durum</th>
+                                    <th>İşlem</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var item in Model)
+                                {
+                                    <tr>
+                                        <th class="vertical-data" scope="row">@item.Id</th>
+                                        <td class="vertical-data">@item.study.StudyName</td>
+                                        <td class="vertical-data">@item.teacher.DisplayName</td>
+                                        <td class="vertical-data">@item.student.StudentName</td>
+                                        <td class="vertical-data">@item.student.ClassLevel</td>
+                                        <td class="vertical-data">@item.Point</td>
+                                        @if (item.IsDoing == true)
+                                        {
+                                            <td class="vertical-data"><span class="text-success">Tamamlandı</span></td>
+                                        }
+                                        else
+                                        {
+                                            <td class="vertical-data"><span class="text-warning">Bekleniyor</span></td>
+                                        }
+                                        <td class="vertical-data">@item.CreatedTime.ToString("MM/dd/yyyy HH:mm")</td>
+                                        @if (item.IsActive == true)
+                                        {
+                                            <td class="vertical-data">Aktif</td>
+                                        }
+                                        else
+                                        {
+                                            <td class="vertical-data">Pasif</td>
+                                        }
+                                        <td class="vertical-data">
+                                            <a class="btn btn-outline-secondary btn-sm edit" title="Düzenle" href="/sinavduzenle?Id=@item.Id">
+                                                <i class="fas fa-pencil-alt" title="Edit"></i>
+                                            </a>
+                                            <a onclick="return confirm('Bu dersi silmek istiyor musunuz?')" class="btn btn-outline-secondary btn-sm deleted" title="Sil" href="/sinavsil?Id=@item.Id">
+                                                <i class="fas fa-trash" title="Delete"></i>
+                                            </a>
+                                            <a class="btn btn-outline-secondary btn-sm above" title="Aktif/Pasif" href="/sinavdurumduzenle?Id=@item.Id">
+                                                <i class="fas fa-wifi" title="Aktif/Pasif"></i>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+
+                }
+                else
+                {
+                    <div class="alert alert-info alert-align"><p style="margin-bottom:0;">Bu sayfada henüz bir sınav verisi bulunmuyor!</p></div>
+                }
+            </div>
+        </div>
+    </div>
+</div>

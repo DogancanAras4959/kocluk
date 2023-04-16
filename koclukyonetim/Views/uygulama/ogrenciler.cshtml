@@ -1,0 +1,109 @@
+﻿@model IEnumerable<kocluk.SERVICES.Dtos.StudentsData.StudentsDto>
+
+@{
+    ViewData["Title"] = "Öğrenciler";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<style>
+    .head-form {
+        display: flex;
+        justify-content: space-between;
+        align-content: center;
+        flex-wrap: nowrap;
+        flex-direction: row;
+        align-items: center;
+    }
+
+    .vertical-data {
+        position: relative;
+        top: 13px;
+    }
+    .alert-align {
+        display: flex;
+        margin: 0 auto;
+        align-items: center;
+        flex-direction: row;
+        justify-content: center;
+    }
+</style>
+
+<div class="row">
+    <div class="col-lg-12">
+        <div class="card">
+            <div class="card-body">
+                <div class="head-form">
+                    <p style="margin-bottom:0;">Öğrencilerinizi yönetin</p>
+                    <a href="/ogrenciekle" class="btn btn-primary w-md waves-effect waves-light">Öğrenci Ekle</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-lg-12">
+        <div class="card">
+            <div class="card-body">
+                @if (Model != null && Model.Count() > 0)
+                {
+                    <div class="table-responsive">
+                        <table class="table mb-0">
+                            <thead class="table-light">
+                                <tr>
+                                    <th></th>
+                                    <th>#</th>
+                                    <th>Öğrenci Adı</th>
+                                    <th>Sınıf</th>
+                                    <th>Veli</th>
+                                    <th>TC Kimlik No</th>
+                                    <th>Oluşturulma</th>
+                                    <th>Durum</th>
+                                    <th>İşlem</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var item in Model)
+                                {
+                                    <tr>
+                                        <td><img src="@item.Image" style="width:50px; height:50px; border-radius:999px;" /></td>
+                                        <th class="vertical-data" scope="row">@item.Id</th>
+                                        <td class="vertical-data">@item.StudentName</td>
+                                        <td class="vertical-data">@item.ClassLevel</td>
+                                        <td class="vertical-data">@item.user.DisplayName</td>
+                                        <td class="vertical-data">@item.CountryId</td>
+                                        <td class="vertical-data">@item.CreatedTime.ToString("MM/dd/yyyy HH:mm")</td>
+                                        @if (item.IsActive == true)
+                                        {
+                                            <td class="vertical-data">Aktif</td>
+                                        }
+                                        else
+                                        {
+                                            <td class="vertical-data">Pasif</td>
+                                        }
+                                        <td class="vertical-data">
+                                            <a class="btn btn-outline-secondary btn-sm edit" title="Düzenle" href="/ogrenciduzenle?Id=@item.Id">
+                                                <i class="fas fa-pencil-alt" title="Edit"></i>
+                                            </a>
+                                            <a onclick="return confirm('Bu koçu silmek istiyor musunuz?')" class="btn btn-outline-secondary btn-sm deleted" title="Sil" href="/ogrencisil?Id=@item.Id">
+                                                <i class="fas fa-trash" title="Delete"></i>
+                                            </a>
+                                            <a class="btn btn-outline-secondary btn-sm above" title="Aktif/Pasif" href="/ogrencidurumduzenle?Id=@item.Id">
+                                                <i class="fas fa-wifi" title="Aktif/Pasif"></i>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+
+                }
+                else
+                {
+                    <div class="alert alert-info alert-align"><p style="margin-bottom:0;">Bu sayfada henüz bir öğrenci verisi bulunmuyor!</p></div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
